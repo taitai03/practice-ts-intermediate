@@ -13,5 +13,5 @@ export const POINT_PERCENT: Record<MemberRank, number> = {
  */
 export function calculatePoints(taxIncluded: number, rank: MemberRank) {
   if (taxIncluded <= 0) return 0;
-  return Math.floor((taxIncluded * POINT_PERCENT[rank]) / 100);
+  return Math.round((taxIncluded * POINT_PERCENT[rank]) / 100);
 }
