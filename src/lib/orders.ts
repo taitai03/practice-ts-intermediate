@@ -2,6 +2,7 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import type { Db } from "@/db";
 import { coupons, members, type OrderStatus, orderItems, orders, products } from "@/db/schema";
 import { CouponError } from "./coupons";
+import { finalizeTotals } from "./order-totals";
 import { calculateOrder } from "./pricing";
 
 export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
@@ -59,7 +60,7 @@ export function createOrder(db: Db, { memberId, items, couponCode, now = new Dat
 
     let pricing;
     try {
-      pricing = calculateOrder({ items: lines, rank: member.rank, coupon, now });
+      pricing = finalizeTotals(calculateOrder({ items: lines, rank: member.rank, coupon, now }));
     } catch (e) {
       if (e instanceof CouponError) throw new OrderError(e.message);
       throw e;
